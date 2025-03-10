@@ -56,7 +56,9 @@ but with a 🔥 **Formula 1 twist**!
 
 ```sh
 
-pip install mysql-connector-python
+uv venv .venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
 
 ```
 
