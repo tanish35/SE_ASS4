@@ -1,11 +1,16 @@
 import mysql.connector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    port=3306,
-    database="marks_db"
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")),
+    database=os.getenv("DB_NAME"),
+    ssl_ca="ca.pem",
 )
 cursor = conn.cursor()
 
@@ -14,7 +19,6 @@ def get_teacher_id(name):
     return cursor.fetchone() 
 
 def get_students_and_marks(subject_id):
-    """Fetch students and their marks for the teacher's subject."""
     query = """
         SELECT students.id, students.name, students.roll_number, marks.marks
         FROM students

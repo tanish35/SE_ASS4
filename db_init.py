@@ -1,17 +1,23 @@
 import mysql.connector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    port=3306
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")),
+    database=os.getenv("DB_NAME1"),
+    ssl_ca="ca.pem",
 )
 cursor = conn.cursor()
 
 cursor.execute("SHOW DATABASES")
 databases = [db[0] for db in cursor.fetchall()]
 
-if "marks_db" not in databases:
+if "defaultdb" in databases:
     print("Creating database and tables...")
     cursor.execute("CREATE DATABASE marks_db")
     conn.database = "marks_db"
@@ -27,6 +33,15 @@ if "marks_db" not in databases:
         CREATE TABLE subjects (
             id INT PRIMARY KEY AUTO_INCREMENT,
             name VARCHAR(100)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE teachers (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            name VARCHAR(100),
+            subject_id INT,
+            FOREIGN KEY (subject_id) REFERENCES subjects(id)
         )
     """)
 
